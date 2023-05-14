@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+coverage/
+build/
+dist/
+node_modules/
+*.log
