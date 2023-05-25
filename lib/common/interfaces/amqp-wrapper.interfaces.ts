@@ -22,3 +22,5 @@ export type {
   NativeMessage,
   Options,
 };
+
+export { connect } from 'amqplib';
