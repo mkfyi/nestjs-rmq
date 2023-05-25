@@ -19,11 +19,15 @@ export class Connections {
   /**
    * @throws ConnectionFailedException
    */
-  public async connect(autoConnect: boolean): Promise<void> {
-    await Promise.all(
+  public async connect(autoConnect: boolean): Promise<Connection[]> {
+    return Promise.all(
       [...this.cache.values()]
         .filter((connection) => connection.autoConnect === autoConnect)
-        .map((connection) => connection.connect()),
+        .map(async (connection) => {
+          await connection.connect();
+
+          return connection;
+        }),
     );
   }
 }
