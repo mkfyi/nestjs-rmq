@@ -1,4 +1,4 @@
-import { Inject, Injectable, Type } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import {
   EXCEPTION_HANDLER_INJECTION_TOKEN,
