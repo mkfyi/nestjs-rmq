@@ -6,3 +6,4 @@ export const RPC_HANDLER_METADATA = 'rmq.meta.handler.rpc';
 export const TOPICS_HANDLER_METADATA = 'rmq.meta.handler.topics';
 export const WORKER_HANDLER_METADATA = 'rmq.meta.handler.worker';
 export const EXCEPTION_HANDLER_INJECTION_TOKEN = 'rmq.exception_handler';
+export const MESSAGE_HEADER_REPLY_TYPE = 'rmq-reply-type';
