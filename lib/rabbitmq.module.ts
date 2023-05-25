@@ -14,9 +14,14 @@ import {
   RabbitMQModuleOptions,
 } from './common/interfaces/rabbitmq.module-options';
 import { DuplicatedConnectionAliasException } from './common/exceptions/duplicated-connection-alias.exception';
+import {
+  DEFAULT_CONNECTION_NAME,
+  EXCEPTION_HANDLER_INJECTION_TOKEN,
+} from './common/constants';
 import { buildConnectionToken } from './core/utils/build-connection-token';
 import { ConnectionWrapper } from './core/wrappers/connection.wrapper';
 import { Connections } from './core/connections';
+import { BaseExceptionHandler } from './core/base-exception-handler';
 
 @Module({})
 export class RabbitMQModule implements OnApplicationBootstrap {
@@ -30,9 +35,10 @@ export class RabbitMQModule implements OnApplicationBootstrap {
 
   public static forRoot(options: RabbitMQModuleOptions): DynamicModule {
     return this.assemble(
+      options.exceptionHandler,
       (Array.isArray(options.connection)
         ? options.connection
-        : [{ name: 'default', ...options.connection }]
+        : [{ name: DEFAULT_CONNECTION_NAME, ...options.connection }]
       ).map(
         (option): ValueProvider => ({
           provide: buildConnectionToken(option.name),
@@ -52,9 +58,10 @@ export class RabbitMQModule implements OnApplicationBootstrap {
     const names = [] as string[];
 
     return this.assemble(
+      options.exceptionHandler,
       (Array.isArray(options.connection)
         ? options.connection
-        : [{ name: 'default', ...options.connection }]
+        : [{ name: DEFAULT_CONNECTION_NAME, ...options.connection }]
       ).map((option) => {
         (option.imports ?? []).forEach((ref) => {
           imports.add(ref);
@@ -79,6 +86,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
   }
 
   private static assemble(
+    exceptionHandler: Type | undefined,
     connections: (FactoryProvider | ValueProvider)[],
     imports?: DynamicModule['imports'],
   ): DynamicModule {
@@ -86,7 +94,18 @@ export class RabbitMQModule implements OnApplicationBootstrap {
       module: RabbitMQModule,
       global: true,
       imports,
-      providers: [...connections],
+      providers: [
+        exceptionHandler
+          ? {
+              provide: EXCEPTION_HANDLER_INJECTION_TOKEN,
+              useExisting: exceptionHandler,
+            }
+          : {
+              provide: EXCEPTION_HANDLER_INJECTION_TOKEN,
+              useClass: BaseExceptionHandler,
+            },
+        ...connections,
+      ],
       exports: connections,
     };
 
