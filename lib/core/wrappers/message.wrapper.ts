@@ -59,12 +59,6 @@ export class MessageWrapper<T extends CommonMessageFields = MessageFields>
     return options?.strict ? correlationId ?? null : correlationId;
   }
 
-  public setReplyType(type: ReplyType): this {
-    this.properties.headers[MESSAGE_HEADER_REPLY_TYPE] = type.toString();
-
-    return this;
-  }
-
   public text(): string {
     return this.content.toString();
   }
