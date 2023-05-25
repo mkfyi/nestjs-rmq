@@ -3,7 +3,8 @@ import { Type } from '@nestjs/common';
 import { QueueHandler } from '../../common/interfaces/queue-handler.interface';
 import { ExceptionHandler } from '../../common/interfaces/exception-handler.interface';
 import { QueueHandlerMetadata } from '../../common/interfaces/queue-handler.metadata';
-import { Connection } from '../../common/interfaces/connection.interface';
+// noinspection ES6PreferShortImport
+import { Channel } from '../../common/interfaces/amqp-wrapper.interfaces';
 import { Connections } from '../connections';
 
 const HANDLER_METADATA = Symbol.for('zmq.manager.handler_metadata');
@@ -43,7 +44,11 @@ export abstract class BaseQueueManager<
           );
 
           if (connection !== null && connection.connected) {
-            await this.bind(connection, entry.handler, metadata);
+            await this.bind(
+              await connection.channel(),
+              this.moduleRef.get(entry.handler, { strict: false }),
+              metadata,
+            );
           }
         }),
     );
@@ -54,8 +59,8 @@ export abstract class BaseQueueManager<
   }
 
   protected abstract bind(
-    connection: Connection,
-    target: Type<QueueHandler<Ret>>,
+    channel: Channel,
+    handler: QueueHandler<Ret>,
     metadata: Metadata,
   ): Promise<void>;
 
