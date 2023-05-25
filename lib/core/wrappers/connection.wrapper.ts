@@ -6,8 +6,8 @@ import {
 } from '../../common/interfaces/amqp-wrapper.interfaces';
 import { NamedConnectionOptions } from '../../common/interfaces/rabbitmq.module-options';
 import { ConnectionFailedException } from '../../common/exceptions/connection-failed.exception';
-import { snake } from '../utils/snake-case';
 import { NotConnectedException } from '../../common/exceptions/not-connected.exception';
+import { snake } from '../utils/snake-case';
 
 export class ConnectionWrapper implements Connection {
   private native?: NativeConnection;
