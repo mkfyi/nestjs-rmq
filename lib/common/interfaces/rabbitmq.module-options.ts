@@ -22,9 +22,20 @@ export interface NamedConnectionOptions extends ConnectionOptions {
 }
 
 export interface QueueAdapterOptions {
+  /**
+   * Name of the adapter, this value must be passed into the @Inject() decorator.
+   */
   name: string;
+
+  /**
+   * Name of the message queue/exchange for the given `connection`.
+   */
   queue: string;
   type: QueueAdapterType;
+
+  /**
+   * Optional a different connection than `default`.
+   */
   connection?: string;
 }
 
