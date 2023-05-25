@@ -49,6 +49,8 @@ export abstract class BaseQueueManager<
               this.moduleRef.get(entry.handler, { strict: false }),
               metadata,
             );
+
+            entry.active = true;
           }
         }),
     );
