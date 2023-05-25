@@ -1,4 +1,5 @@
-import { buildConnectionToken, snake } from '../../lib/common/constants';
+import { snake } from '../../lib/core/utils/snake-case';
+import { buildConnectionToken } from '../../lib/core/utils/build-connection-token';
 
 describe('snake_case', (): void => {
   it('passing an empty string will do nothing', (): void => {
