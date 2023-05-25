@@ -21,6 +21,10 @@ export class ConnectionWrapper implements Connection {
     return this.native !== undefined;
   }
 
+  public get autoConnect(): boolean {
+    return this.options.autoConnect ?? true;
+  }
+
   /**
    * @throws ConnectionFailedException
    */

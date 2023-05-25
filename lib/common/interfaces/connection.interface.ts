@@ -14,6 +14,12 @@ export interface Connection {
   connected: boolean;
 
   /**
+   * Determines if the connection will be established during
+   * onApplicationBootstrap() lifecycle (default: true).
+   */
+  autoConnect: boolean;
+
+  /**
    * Connects to an AMQP server.
    *
    * @throws ConnectionFailedException
