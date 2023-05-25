@@ -11,7 +11,7 @@ export interface Connection {
   /**
    * Determines if the connection has been established.
    */
-  connected(): boolean;
+  connected: boolean;
 
   /**
    * Connects to an AMQP server.
@@ -27,6 +27,8 @@ export interface Connection {
 
   /**
    * Creates a channel for this specific connection.
+   *
+   * @throws NotConnectedException
    */
   channel(): Promise<Channel>;
 }
