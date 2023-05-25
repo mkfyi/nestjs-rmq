@@ -37,10 +37,11 @@ export class WorkerQueueManager extends BaseQueueManager {
         if (msg !== null) {
           handler
             .execute(new MessageWrapper(msg))
-            .catch((e) => this.exceptionHandler.handle(e, metadata.queue));
+            .catch((e) => this.exceptionHandler.handle(e, metadata.queue))
+            .finally(() => channel.ack(msg));
         }
       },
-      { noAck: true },
+      { noAck: false },
     );
   }
 }
