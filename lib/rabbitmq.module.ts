@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { Connection } from './common/interfaces/connection.interface';
 import {
+  isRoutedQueueAdapterOptions,
+  isTopicQueueAdapterOptions,
   RabbitMQModuleAsyncOptions,
   RabbitMQModuleOptions,
 } from './common/interfaces/rabbitmq.module-options';
@@ -32,6 +34,16 @@ import {
   WorkerQueueManager,
 } from './core/managers';
 import { QueueHandlerExplorer } from './core/queue-handler-explorer';
+import { QueueAdapterType } from './common/interfaces/queue-adapter-type.enum';
+import {
+  ListenerQueueAdapter,
+  PubSubQueueAdapter,
+  RoutingQueueAdapter,
+  RpcQueueAdapter,
+  TopicsQueueAdapter,
+  WorkerQueueAdapter,
+} from './core/adapter';
+import { QueueAdapter } from './common/interfaces/queue-adapter.interface';
 
 @Module({})
 export class RabbitMQModule implements OnApplicationBootstrap {
@@ -101,6 +113,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
           useValue: new ConnectionWrapper(option),
         }),
       ),
+      options.adapters,
     );
   }
 
@@ -137,6 +150,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
           inject: option.inject,
         };
       }),
+      options.adapters,
       [...imports],
     );
   }
@@ -144,6 +158,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
   private static assemble(
     exceptionHandler: Type | undefined,
     connections: (FactoryProvider | ValueProvider)[],
+    adapters?: RabbitMQModuleOptions['adapters'],
     imports?: DynamicModule['imports'],
   ): DynamicModule {
     const dynModule: DynamicModule = {
@@ -175,6 +190,54 @@ export class RabbitMQModule implements OnApplicationBootstrap {
       inject: connections.map(({ provide }) => provide),
     });
 
+    this.assembleAdapterProviders(dynModule, adapters);
+
     return dynModule;
+  }
+
+  private static assembleAdapterProviders(
+    dynModule: DynamicModule,
+    adapters: RabbitMQModuleOptions['adapters'],
+  ): void {
+    const adapterProviders = (adapters ?? []).map(
+      (option): FactoryProvider => ({
+        provide: option.name,
+        useFactory: (connections: Connections) => {
+          const assemble = <T extends QueueAdapter | RpcQueueAdapter>(
+            adapter: Type<T>,
+            ...args: any[]
+          ): T =>
+            new adapter(
+              connections.get(option.connection ?? DEFAULT_CONNECTION_NAME),
+              option.queue,
+              ...args,
+            );
+
+          if (isRoutedQueueAdapterOptions(option)) {
+            return assemble(RoutingQueueAdapter, option.route);
+          } else if (isTopicQueueAdapterOptions(option)) {
+            return assemble(TopicsQueueAdapter, option.pattern);
+          } else {
+            switch (option.type) {
+              case QueueAdapterType.Listener:
+                return assemble(ListenerQueueAdapter);
+              case QueueAdapterType.Worker:
+                return assemble(WorkerQueueAdapter);
+              case QueueAdapterType.PubSub:
+                return assemble(PubSubQueueAdapter);
+              case QueueAdapterType.Rpc:
+                return assemble<RpcQueueAdapter>(RpcQueueAdapter);
+            }
+          }
+        },
+      }),
+    );
+
+    if (adapterProviders.length > 0) {
+      dynModule.providers?.push(...adapterProviders);
+      dynModule.exports?.push(
+        ...adapterProviders.map(({ provide }) => provide),
+      );
+    }
   }
 }
