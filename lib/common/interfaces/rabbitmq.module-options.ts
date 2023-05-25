@@ -28,10 +28,27 @@ export interface QueueAdapterOptions {
   connection?: string;
 }
 
+export type RoutedQueueAdapterOptions = QueueAdapterOptions & { route: string };
+export type TopicQueueAdapterOptions = QueueAdapterOptions & {
+  pattern: string;
+};
+
+export const isRoutedQueueAdapterOptions = (
+  data: QueueAdapterOptions,
+): data is RoutedQueueAdapterOptions => data.type === QueueAdapterType.Routing;
+
+export const isTopicQueueAdapterOptions = (
+  data: QueueAdapterOptions,
+): data is TopicQueueAdapterOptions => data.type === QueueAdapterType.Topics;
+
 export interface BaseModuleOptions<T> {
   connection: T;
   exceptionHandler?: Type<ExceptionHandler>;
-  adapters?: QueueAdapterOptions[];
+  adapters?: (
+    | QueueAdapterOptions
+    | RoutedQueueAdapterOptions
+    | TopicQueueAdapterOptions
+  )[];
 }
 
 export interface RabbitMQModuleOptionsFactory

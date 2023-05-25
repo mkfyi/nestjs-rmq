@@ -8,7 +8,7 @@ import { AnswerWrapper } from '../wrappers/answer.wrapper';
 import { BaseQueueAdapter } from './base.queue-adapter';
 
 export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
-  public constructor(connection: Connection, queue: string) {
+  public constructor(connection: Connection | null, queue: string) {
     super(connection, queue);
   }
 

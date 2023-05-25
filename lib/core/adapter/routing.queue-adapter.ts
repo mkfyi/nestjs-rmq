@@ -5,7 +5,7 @@ import { Channel } from '../../common/interfaces/amqp-wrapper.interfaces';
 
 export class RoutingQueueAdapter extends BaseQueueAdapter {
   public constructor(
-    connection: Connection,
+    connection: Connection | null,
     queue: string,
     private readonly route: string,
   ) {

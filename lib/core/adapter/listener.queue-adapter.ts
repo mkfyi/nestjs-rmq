@@ -4,7 +4,7 @@ import { Connection } from '../../common/interfaces/connection.interface';
 import { Channel } from '../../common/interfaces/amqp-wrapper.interfaces';
 
 export class ListenerQueueAdapter extends BaseQueueAdapter {
-  public constructor(connection: Connection, queue: string) {
+  public constructor(connection: Connection | null, queue: string) {
     super(connection, queue);
   }
 
