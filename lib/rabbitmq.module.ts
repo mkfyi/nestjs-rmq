@@ -20,8 +20,9 @@ import {
 } from './common/constants';
 import { buildConnectionToken } from './core/utils/build-connection-token';
 import { ConnectionWrapper } from './core/wrappers/connection.wrapper';
-import { Connections } from './core/connections';
 import { BaseExceptionHandler } from './core/base-exception-handler';
+import { Connections } from './core/connections';
+import { QueueManagers } from './core/managers';
 
 @Module({})
 export class RabbitMQModule implements OnApplicationBootstrap {
@@ -104,6 +105,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
               provide: EXCEPTION_HANDLER_INJECTION_TOKEN,
               useClass: BaseExceptionHandler,
             },
+        ...QueueManagers,
         ...connections,
       ],
       exports: connections,
