@@ -8,7 +8,10 @@ import { Connections } from '../connections';
 
 const HANDLER_METADATA = Symbol.for('zmq.manager.handler_metadata');
 
-export abstract class BaseQueueManager<Ret = void> {
+export abstract class BaseQueueManager<
+  Ret = void,
+  Metadata extends QueueHandlerMetadata = QueueHandlerMetadata,
+> {
   private readonly [HANDLER_METADATA]: string;
 
   protected handlers = new Map<
@@ -35,7 +38,9 @@ export abstract class BaseQueueManager<Ret = void> {
             entry.handler,
           );
 
-          const connection = this.connections.get(metadata.connection);
+          const connection = this.connections.get(
+            metadata.connection as string,
+          );
 
           if (connection !== null && connection.connected) {
             await this.bind(connection, entry.handler, metadata);
@@ -48,12 +53,10 @@ export abstract class BaseQueueManager<Ret = void> {
     handlers.forEach((handler) => this.registerHandler(handler));
   }
 
-  protected abstract bind<
-    T extends QueueHandlerMetadata = QueueHandlerMetadata,
-  >(
+  protected abstract bind(
     connection: Connection,
     target: Type<QueueHandler<Ret>>,
-    metadata: T,
+    metadata: Metadata,
   ): Promise<void>;
 
   protected registerHandler(handler: Type<QueueHandler<Ret>>): void {
@@ -62,7 +65,7 @@ export abstract class BaseQueueManager<Ret = void> {
     }
   }
 
-  protected extractMetadata<Metadata extends QueueHandlerMetadata>(
+  protected extractMetadata(
     metadataKey: string,
     handler: Type<QueueHandler<Ret>>,
   ): Required<Metadata> {
