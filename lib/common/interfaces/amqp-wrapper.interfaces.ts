@@ -4,6 +4,7 @@ import {
   Connection,
   ConsumeMessageFields,
   Message as NativeMessage,
+  MessageFields,
   Options,
 } from 'amqplib';
 
@@ -17,6 +18,7 @@ export type {
   CommonMessageFields,
   ConsumeMessageFields,
   Connection,
+  MessageFields,
   NativeMessage,
   Options,
 };
