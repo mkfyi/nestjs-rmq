@@ -1,6 +1,8 @@
 import { DynamicModule, Type } from '@nestjs/common';
 // noinspection ES6PreferShortImport
 import { Options } from './amqp-wrapper.interfaces';
+import { ExceptionHandler } from './exception-handler.interface';
+import { QueueAdapterType } from './queue-adapter-type.enum';
 
 export interface ConnectionOptions extends Options.Connect {
   /**
@@ -19,12 +21,17 @@ export interface NamedConnectionOptions extends ConnectionOptions {
   name: string;
 }
 
-export interface RabbitMQModuleOptions {
-  connection:
-    | ConnectionOptions
-    | (Omit<NamedConnectionOptions, 'name'> & { name?: string })
-    | NamedConnectionOptions[];
-  exceptionHandler?: Type;
+export interface QueueAdapterOptions {
+  name: string;
+  queue: string;
+  type: QueueAdapterType;
+  connection?: string;
+}
+
+export interface BaseModuleOptions<T> {
+  connection: T;
+  exceptionHandler?: Type<ExceptionHandler>;
+  adapters?: QueueAdapterOptions[];
 }
 
 export interface RabbitMQModuleOptionsFactory
@@ -36,10 +43,14 @@ export interface RabbitMQModuleOptionsFactory
   inject?: any[];
 }
 
-export interface RabbitMQModuleAsyncOptions {
-  connection:
-    | Omit<RabbitMQModuleOptionsFactory, 'name'>
-    | (Omit<RabbitMQModuleOptionsFactory, 'name'> & { name?: string })
-    | RabbitMQModuleOptionsFactory[];
-  exceptionHandler?: Type;
-}
+export type RabbitMQModuleOptions = BaseModuleOptions<
+  | ConnectionOptions
+  | (Omit<NamedConnectionOptions, 'name'> & { name?: string })
+  | NamedConnectionOptions[]
+>;
+
+export type RabbitMQModuleAsyncOptions = BaseModuleOptions<
+  | Omit<RabbitMQModuleOptionsFactory, 'name'>
+  | (Omit<RabbitMQModuleOptionsFactory, 'name'> & { name?: string })
+  | RabbitMQModuleOptionsFactory[]
+>;
