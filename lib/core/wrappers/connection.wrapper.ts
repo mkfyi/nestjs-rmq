@@ -1,7 +1,7 @@
 import { Connection } from '../../common/interfaces/connection.interface';
 import {
   Channel,
-  Connection as NativeConnection,
+  NativeConnection,
   connect,
 } from '../../common/interfaces/amqp-wrapper.interfaces';
 import { NamedConnectionOptions } from '../../common/interfaces/rabbitmq.module-options';

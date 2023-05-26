@@ -18,7 +18,7 @@ export type {
   Channel,
   CommonMessageFields,
   ConsumeMessageFields,
-  Connection,
+  Connection as NativeConnection,
   MessageFields,
   MessageProperties,
   NativeMessage,
