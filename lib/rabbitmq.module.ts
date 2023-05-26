@@ -175,7 +175,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
             }
           : {
               provide: EXCEPTION_HANDLER_INJECTION_TOKEN,
-              useClass: BaseExceptionHandler,
+              useValue: new BaseExceptionHandler(),
             },
         ...QueueManagers,
         ...connections,
