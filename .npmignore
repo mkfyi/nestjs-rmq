@@ -3,6 +3,8 @@
 .husky/
 .vscode/
 .vscode-test/
+coverage/
+node_modules/
 .eslintrc.js
 .gitignore
 .prettierrc
