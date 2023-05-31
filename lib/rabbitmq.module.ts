@@ -230,6 +230,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
             }
           }
         },
+        inject: [Connections],
       }),
     );
 
