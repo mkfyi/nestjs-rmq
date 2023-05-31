@@ -1,14 +1,18 @@
 {
-  "name": "@mkilian95/nest-rmq",
+  "name": "@mkfyi/nest-rmq",
   "version": "1.0.0",
   "description": "Use the full power of RabbitMQ within a NestJS application",
   "author": {
     "name": "Michael Kilian",
-    "url": "https://github.com/mkilian95"
+    "url": "https://github.com/mkfyi"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mkfyi/nest-tmq.git"
+  },
   "bugs": {
-    "url": "https://github.com/mkilian95/nestjs-rmq/issues"
+    "url": "https://github.com/mkfyi/nestjs-rmq/issues"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
