@@ -78,12 +78,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-${{ github.run_id }}-
 
-      - run: 🚀 publish to GitHub
+      - name: 🚀 publish to GitHub
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
         if: matrix.registry == 'npm.pkg.github.com'
 
-      - run: 🚀 publish to npm
+      - name: 🚀 publish to npm
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: matrix.registry == 'registry.npmjs.org'
