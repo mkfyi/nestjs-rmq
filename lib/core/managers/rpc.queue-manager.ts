@@ -38,53 +38,48 @@ export class RpcQueueManager extends BaseQueueManager<Reply> {
   ): Promise<void> {
     await channel.assertQueue(metadata.queue, { durable: false });
     await channel.prefetch(1);
-    await channel.consume(
-      metadata.queue,
-      (msg) => {
-        if (msg !== null) {
-          const message = new MessageWrapper<ConsumeMessageFields>(msg);
+    await channel.consume(metadata.queue, (msg) => {
+      if (msg !== null) {
+        const message = new MessageWrapper<ConsumeMessageFields>(msg);
 
-          handler
-            .execute(message)
-            .then((reply) => this.reply(channel, message, reply))
-            .catch((e) =>
-              this.reply(
-                channel,
-                message,
-                this.exceptionHandler.handle(e, metadata.queue),
-              ),
-            )
-            .finally(() => channel.ack(msg));
-        }
-      },
-      { noAck: true },
-    );
+        handler
+          .execute(message)
+          .then((reply) => this.reply(channel, message, reply))
+          .catch((e) =>
+            this.reply(
+              channel,
+              message,
+              this.exceptionHandler.handle(e, metadata.queue),
+            ),
+          )
+          .finally(() => channel.ack(msg));
+      }
+    });
   }
 
   private reply(
     channel: Channel,
     msg: MessageWrapper<ConsumeMessageFields>,
     reply: Reply,
-  ) {
-    if (reply.payload instanceof Uint8Array) {
-      channel.sendToQueue(
-        msg.getReplyTo() as string,
-        reply.payload instanceof Buffer
-          ? reply.payload
-          : Buffer.from(
-              reply.payload instanceof Uint8Array
-                ? reply.payload
-                : typeof reply.payload === 'object'
-                ? JSON.stringify(reply.payload)
-                : reply.payload != undefined
-                ? `${reply.payload}`
-                : JSON.stringify(reply),
-            ),
-        {
-          headers: this.getReplyTypeHeaders(reply),
-        },
-      );
-    }
+  ): boolean {
+    return channel.sendToQueue(
+      msg.getReplyTo() as string,
+      reply.payload instanceof Buffer
+        ? reply.payload
+        : Buffer.from(
+            reply.payload instanceof Uint8Array
+              ? reply.payload
+              : typeof reply.payload === 'object'
+              ? JSON.stringify(reply.payload)
+              : reply.payload != undefined
+              ? `${reply.payload}`
+              : JSON.stringify(reply),
+          ),
+      {
+        headers: this.getReplyTypeHeaders(reply),
+        correlationId: msg.getCorrelationId(),
+      },
+    );
   }
 
   private getReplyTypeHeaders(reply: Reply): Record<string, string> {

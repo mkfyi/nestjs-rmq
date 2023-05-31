@@ -15,14 +15,10 @@ export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
   /**
    * @throws UnableToQueueRemoteProcedureCallException
    */
-  protected async sendInternal(
-    channel: Channel,
-    payload: Buffer,
-  ): Promise<Answer> {
+  protected sendInternal(channel: Channel, payload: Buffer): Promise<Answer> {
     return new Promise<Answer>(async (resolve, reject) => {
       const id = randomUUID();
       const { queue } = await channel.assertQueue('', { exclusive: true });
-
       await channel.consume(
         queue,
         (msg) => {
@@ -30,7 +26,10 @@ export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
             const answer = new AnswerWrapper(msg);
 
             if (answer.getCorrelationId() === id) {
-              resolve(answer);
+              channel
+                .deleteQueue(queue)
+                .then(() => resolve(answer))
+                .catch((e) => reject(e));
             }
           }
         },
@@ -39,7 +38,7 @@ export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
 
       const result = channel.sendToQueue(this.queue, payload, {
         correlationId: id,
-        replyTo: this.queue,
+        replyTo: queue,
       });
 
       if (!result) {
