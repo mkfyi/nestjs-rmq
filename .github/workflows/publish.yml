@@ -57,6 +57,7 @@ jobs:
       - name: 🔧 setup node.js
         uses: actions/setup-node@v3
         with:
+          cache: 'yarn'
           node-version: 18.x
           registry-url: 'https://${{ matrix.registry }}'
 
