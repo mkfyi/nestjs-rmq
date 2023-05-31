@@ -17,12 +17,34 @@ export class BaseExceptionHandler implements ExceptionHandler {
       name?: string;
     };
 
+    const [modifier, messages] = this.collectAndAssembleErrorMessages(message);
+
     this.logger.error(
-      Array.isArray(message) ? message[0] : message,
-      undefined,
-      `RabbitMQ (${queue})`,
+      [
+        `received ${name} in ${queue} queue: `.concat(modifier ?? ''),
+        ...messages,
+      ].join('\n'),
     );
 
     return { error: name ?? 'Error', message };
+  }
+
+  private collectAndAssembleErrorMessages(
+    message: string | string[],
+  ): [string | null, string | string[]] {
+    const messages = [] as string[];
+    let modifier = null as string | null;
+
+    if (Array.isArray(message)) {
+      if (message.length > 1) {
+        messages.push(...message.map((s) => '\t- '.concat(s)));
+      } else {
+        modifier = message.shift() as string;
+      }
+    } else {
+      modifier = message;
+    }
+
+    return [modifier, messages];
   }
 }
