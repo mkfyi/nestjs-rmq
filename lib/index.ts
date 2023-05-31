@@ -1,7 +1,7 @@
 /**
  * RabbitMQ Module for NestJS
  * Copyright (c) 2023 - Michael Kilian
- * https://github.com/mkilian95
+ * https://github.com/mkfyi
  * MIT Licensed
  */
 
