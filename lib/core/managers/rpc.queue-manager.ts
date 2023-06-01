@@ -14,6 +14,7 @@ import { ExceptionHandler } from '../../common/interfaces/exception-handler.inte
 import {
   QueueHandler,
   Reply,
+  RpcReturnTypes,
 } from '../../common/interfaces/queue-handler.interface';
 import { QueueHandlerMetadata } from '../../common/interfaces/queue-handler.metadata';
 import { MessageWrapper, ReplyType } from '../wrappers/message.wrapper';
@@ -21,7 +22,7 @@ import { Connections } from '../connections';
 import { BaseQueueManager } from './base.queue-manager';
 
 @Injectable()
-export class RpcQueueManager extends BaseQueueManager<Reply> {
+export class RpcQueueManager extends BaseQueueManager<RpcReturnTypes> {
   public constructor(
     moduleRef: ModuleRef,
     connections: Connections,
@@ -33,7 +34,7 @@ export class RpcQueueManager extends BaseQueueManager<Reply> {
 
   protected async bind(
     channel: Channel,
-    handler: QueueHandler<Reply>,
+    handler: QueueHandler<RpcReturnTypes>,
     metadata: QueueHandlerMetadata,
   ): Promise<void> {
     await channel.assertQueue(metadata.queue, { durable: false });
@@ -44,7 +45,7 @@ export class RpcQueueManager extends BaseQueueManager<Reply> {
 
         handler
           .execute(message)
-          .then((reply) => this.reply(channel, message, reply))
+          .then((reply) => this.reply(channel, message, { payload: reply }))
           .catch((e) =>
             this.reply(
               channel,
