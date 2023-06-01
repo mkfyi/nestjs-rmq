@@ -1,7 +1,7 @@
 {
   "name": "@mkfyi/nestjs-rmq",
   "version": "1.0.1",
-  "description": "Use the full power of RabbitMQ within a NestJS application",
+  "description": "A decent NestJS module for a more advanced communication between microservices using the full power of RabbitMQ",
   "author": {
     "name": "Michael Kilian",
     "url": "https://github.com/mkfyi"
