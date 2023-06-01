@@ -10,4 +10,12 @@ export interface QueueHandler<Ret = void> {
   execute(message: Message): Promise<Ret>;
 }
 
-export type RpcQueueHandler<T = unknown> = QueueHandler<Reply<T>>;
+export type RpcReturnTypes =
+  | boolean
+  | number
+  | string
+  | Uint8Array
+  | Record<string, unknown>;
+
+export type RpcQueueHandler<T extends RpcReturnTypes = RpcReturnTypes> =
+  QueueHandler<T>;
