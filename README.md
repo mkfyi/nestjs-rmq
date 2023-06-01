@@ -37,16 +37,16 @@ This package provides a more advanced communication between microservices using 
 
 ```bash
 # from official npm registry
-$ npm i --save @mkfyi/nest-rmq
+$ npm i --save @mkfyi/nestjs-rmq
 
 # using yarn
-$ yarn add @mkfyi/nest-rmq
+$ yarn add @mkfyi/nestjs-rmq
 
 # from GitHub package registry
-$ npm i --save --registry=https://npm.pkg.github.com @mkfyi/nest-rmq
+$ npm i --save --registry=https://npm.pkg.github.com @mkfyi/nestjs-rmq
 
 # from GitHub package registry using yarn
-$ yarn add --registry=https://npm.pkg.github.com @mkfyi/nest-rmq
+$ yarn add --registry=https://npm.pkg.github.com @mkfyi/nestjs-rmq
 ```
 
 Since `nest-rmq` is built on top of [amqplib](https://www.npmjs.com/package/amqplib) you also need to install the types for it.
@@ -57,12 +57,12 @@ $ npm install -D @types/amqplib
 
 ### Usage
 
-Import the `RabbitMQModule` from `@mkfyi/nest-rmq` and call the `forRoot()` method inside the imports of your application module. You can also set a custom `name` for the connection, otherwise `default` will be used.
+Import the `RabbitMQModule` from `@mkfyi/nestjs-rmq` and call the `forRoot()` method inside the imports of your application module. You can also set a custom `name` for the connection, otherwise `default` will be used.
 
 #### Initialization
 
 ```TypeScript
-import { RabbitMQModule } from '@mkfyi/nest-rmq';
+import { RabbitMQModule } from '@mkfyi/nestjs-rmq';
 
 @Module({
   imports: [
@@ -220,4 +220,4 @@ export class AppModule {}
 
 ## License
 
-[nest-rmq](https://github.com/mkfyi/nest-rmq) is [MIT licensed](LICENSE).
+[nest-rmq](https://github.com/mkfyi/nestjs-rmq) is [MIT licensed](LICENSE).
