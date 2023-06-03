@@ -5,6 +5,7 @@ import { ExceptionHandler } from '../../common/interfaces/exception-handler.inte
 import { QueueHandlerMetadata } from '../../common/interfaces/queue-handler.metadata';
 // noinspection ES6PreferShortImport
 import { Channel } from '../../common/interfaces/amqp-wrapper.interfaces';
+import { Json } from '../../common/interfaces/json.interface';
 import { Connections } from '../connections';
 
 const HANDLER_METADATA = Symbol.for('zmq.manager.handler_metadata');
@@ -24,6 +25,7 @@ export abstract class BaseQueueManager<
     protected readonly moduleRef: ModuleRef,
     protected readonly connections: Connections,
     protected readonly exceptionHandler: ExceptionHandler,
+    protected readonly parser: Json,
     metadataKey: string,
   ) {
     this[HANDLER_METADATA] = metadataKey;

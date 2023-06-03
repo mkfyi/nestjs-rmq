@@ -12,6 +12,7 @@ import { RoutedQueueHandlerMetadata } from '../../common/interfaces/queue-handle
 import { MessageWrapper } from '../wrappers/message.wrapper';
 import { Connections } from '../connections';
 import { BaseQueueManager } from './base.queue-manager';
+import { JsonService } from '../json.service';
 
 @Injectable()
 export class RoutingQueueManager extends BaseQueueManager<
@@ -23,8 +24,15 @@ export class RoutingQueueManager extends BaseQueueManager<
     connections: Connections,
     @Inject(EXCEPTION_HANDLER_INJECTION_TOKEN)
     exceptionHandler: ExceptionHandler,
+    parser: JsonService,
   ) {
-    super(moduleRef, connections, exceptionHandler, ROUTING_HANDLER_METADATA);
+    super(
+      moduleRef,
+      connections,
+      exceptionHandler,
+      parser,
+      ROUTING_HANDLER_METADATA,
+    );
   }
 
   protected async bind(
@@ -45,7 +53,7 @@ export class RoutingQueueManager extends BaseQueueManager<
       (msg) => {
         if (msg !== null) {
           handler
-            .execute(new MessageWrapper(msg))
+            .execute(new MessageWrapper(msg, this.parser))
             .catch((e) => this.exceptionHandler.handle(e, metadata.queue));
         }
       },
