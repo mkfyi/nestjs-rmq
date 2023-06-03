@@ -3,6 +3,7 @@ import {
   ConsumeMessageFields,
 } from '../../common/interfaces/amqp-wrapper.interfaces';
 import { Answer } from '../../common/interfaces/answer.interface';
+import { Json } from '../../common/interfaces/json.interface';
 import { ThrowOption } from '../../common/interfaces/message.interface';
 // noinspection ES6PreferShortImport
 import { Reply } from '../../common/interfaces/queue-handler.interface';
@@ -15,8 +16,8 @@ export class AnswerWrapper
   public readonly error?: string;
   public readonly message?: string | string[];
 
-  public constructor(native: AmqpMessage<ConsumeMessageFields>) {
-    super(native);
+  public constructor(native: AmqpMessage<ConsumeMessageFields>, parser: Json) {
+    super(native, parser);
 
     if (this.getReplyType() === ReplyType.Json) {
       const { error, message } = this.object<Reply>();
@@ -42,6 +43,6 @@ export class AnswerWrapper
   public object<T = unknown>(options?: ThrowOption | undefined): T | undefined {
     return !options?.ignore && this.getReplyType() === ReplyType.Buffer
       ? undefined
-      : (JSON.parse(this.text()) as Reply<T>).payload;
+      : this.parser.parse<Reply<T>>(this.text()).payload;
   }
 }

@@ -12,6 +12,7 @@ import { QueueHandlerMetadata } from '../../common/interfaces/queue-handler.meta
 import { MessageWrapper } from '../wrappers/message.wrapper';
 import { Connections } from '../connections';
 import { BaseQueueManager } from './base.queue-manager';
+import { JsonService } from '../json.service';
 
 @Injectable()
 export class PubSubQueueManager extends BaseQueueManager {
@@ -20,8 +21,15 @@ export class PubSubQueueManager extends BaseQueueManager {
     connections: Connections,
     @Inject(EXCEPTION_HANDLER_INJECTION_TOKEN)
     exceptionHandler: ExceptionHandler,
+    parser: JsonService,
   ) {
-    super(moduleRef, connections, exceptionHandler, PUB_SUB_ANDLER_METADATA);
+    super(
+      moduleRef,
+      connections,
+      exceptionHandler,
+      parser,
+      PUB_SUB_ANDLER_METADATA,
+    );
   }
 
   protected async bind(
@@ -39,7 +47,7 @@ export class PubSubQueueManager extends BaseQueueManager {
       (msg) => {
         if (msg !== null) {
           handler
-            .execute(new MessageWrapper(msg))
+            .execute(new MessageWrapper(msg, this.parser))
             .catch((e) => this.exceptionHandler.handle(e, metadata.queue));
         }
       },

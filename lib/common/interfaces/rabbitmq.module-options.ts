@@ -3,6 +3,7 @@ import { DynamicModule, Type } from '@nestjs/common';
 import { Options } from './amqp-wrapper.interfaces';
 import { ExceptionHandler } from './exception-handler.interface';
 import { QueueAdapterType } from './queue-adapter-type.enum';
+import { ActionCallback } from './json.interface';
 
 export interface ConnectionOptions extends Options.Connect {
   /**
@@ -60,6 +61,7 @@ export interface BaseModuleOptions<T> {
     | RoutedQueueAdapterOptions
     | TopicQueueAdapterOptions
   )[];
+  parser?: ActionCallback;
 }
 
 export interface RabbitMQModuleOptionsFactory

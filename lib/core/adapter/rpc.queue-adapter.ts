@@ -5,10 +5,15 @@ import { Connection } from '../../common/interfaces/connection.interface';
 import { Channel } from '../../common/interfaces/amqp-wrapper.interfaces';
 import { Answer } from '../../common/interfaces/answer.interface';
 import { AnswerWrapper } from '../wrappers/answer.wrapper';
+import { JsonService } from '../json.service';
 import { BaseQueueAdapter } from './base.queue-adapter';
 
 export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
-  public constructor(connection: Connection | null, queue: string) {
+  public constructor(
+    connection: Connection | null,
+    queue: string,
+    private readonly parser: JsonService,
+  ) {
     super(connection, queue);
   }
 
@@ -23,7 +28,7 @@ export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
         queue,
         (msg) => {
           if (msg !== null) {
-            const answer = new AnswerWrapper(msg);
+            const answer = new AnswerWrapper(msg, this.parser);
 
             if (answer.getCorrelationId() === id) {
               channel

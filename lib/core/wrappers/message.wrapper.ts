@@ -1,4 +1,5 @@
 import { Type } from '@nestjs/common';
+import { ClassTransformOptions } from '@nestjs/common/interfaces/external/class-transform-options.interface';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 // noinspection ES6PreferShortImport
@@ -13,8 +14,8 @@ import {
   ValidateOption,
 } from '../../common/interfaces/message.interface';
 import { MESSAGE_HEADER_REPLY_TYPE } from '../../common/constants';
-import { ClassTransformOptions } from '@nestjs/common/interfaces/external/class-transform-options.interface';
 import { ValidationException } from '../../common/exceptions/validation.exception';
+import { Json } from '../../common/interfaces/json.interface';
 
 export enum ReplyType {
   Buffer = 0,
@@ -31,7 +32,7 @@ export class MessageWrapper<T extends CommonMessageFields = MessageFields>
   public readonly fields: T;
   public readonly properties: MessageProperties;
 
-  public constructor(native: AmqpMessage<T>) {
+  public constructor(native: AmqpMessage<T>, protected readonly parser: Json) {
     Object.assign(this, native);
   }
 
@@ -64,7 +65,7 @@ export class MessageWrapper<T extends CommonMessageFields = MessageFields>
   }
 
   public object<T = unknown>(): T {
-    return JSON.parse(this.text()) as T;
+    return this.parser.parse<T>(this.text());
   }
 
   public async dto<T>(

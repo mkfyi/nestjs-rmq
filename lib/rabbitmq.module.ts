@@ -19,6 +19,7 @@ import { DuplicatedConnectionAliasException } from './common/exceptions/duplicat
 import {
   DEFAULT_CONNECTION_NAME,
   EXCEPTION_HANDLER_INJECTION_TOKEN,
+  JSON_SERVICE_PARSER,
 } from './common/constants';
 import { buildConnectionToken } from './core/utils/build-connection-token';
 import { ConnectionWrapper } from './core/wrappers/connection.wrapper';
@@ -44,6 +45,8 @@ import {
   WorkerQueueAdapter,
 } from './core/adapter';
 import { QueueAdapter } from './common/interfaces/queue-adapter.interface';
+import { ActionCallback } from './common/interfaces/json.interface';
+import { JsonService } from './core/json.service';
 
 @Module({})
 export class RabbitMQModule implements OnApplicationBootstrap {
@@ -104,6 +107,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
   public static forRoot(options: RabbitMQModuleOptions): DynamicModule {
     return this.assemble(
       options.exceptionHandler,
+      options.parser,
       (Array.isArray(options.connection)
         ? options.connection
         : [{ name: DEFAULT_CONNECTION_NAME, ...options.connection }]
@@ -128,6 +132,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
 
     return this.assemble(
       options.exceptionHandler,
+      options.parser,
       (Array.isArray(options.connection)
         ? options.connection
         : [{ name: DEFAULT_CONNECTION_NAME, ...options.connection }]
@@ -157,6 +162,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
 
   private static assemble(
     exceptionHandler: Type | undefined,
+    parser: ActionCallback | undefined,
     connections: (FactoryProvider | ValueProvider)[],
     adapters?: RabbitMQModuleOptions['adapters'],
     imports?: DynamicModule['imports'],
@@ -168,6 +174,11 @@ export class RabbitMQModule implements OnApplicationBootstrap {
       providers: [
         RabbitMQModule,
         QueueHandlerExplorer,
+        {
+          provide: JSON_SERVICE_PARSER,
+          useValue: parser,
+        },
+        JsonService,
         exceptionHandler
           ? {
               provide: EXCEPTION_HANDLER_INJECTION_TOKEN,
@@ -202,7 +213,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
     const adapterProviders = (adapters ?? []).map(
       (option): FactoryProvider => ({
         provide: option.name,
-        useFactory: (connections: Connections) => {
+        useFactory: (connections: Connections, json: JsonService) => {
           const assemble = <T extends QueueAdapter | RpcQueueAdapter>(
             adapter: Type<T>,
             ...args: any[]
@@ -226,11 +237,11 @@ export class RabbitMQModule implements OnApplicationBootstrap {
               case QueueAdapterType.PubSub:
                 return assemble(PubSubQueueAdapter);
               case QueueAdapterType.Rpc:
-                return assemble<RpcQueueAdapter>(RpcQueueAdapter);
+                return assemble<RpcQueueAdapter>(RpcQueueAdapter, json);
             }
           }
         },
-        inject: [Connections],
+        inject: [Connections, JsonService],
       }),
     );
 

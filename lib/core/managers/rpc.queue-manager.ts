@@ -20,6 +20,7 @@ import { QueueHandlerMetadata } from '../../common/interfaces/queue-handler.meta
 import { MessageWrapper, ReplyType } from '../wrappers/message.wrapper';
 import { Connections } from '../connections';
 import { BaseQueueManager } from './base.queue-manager';
+import { JsonService } from '../json.service';
 
 @Injectable()
 export class RpcQueueManager extends BaseQueueManager<RpcReturnTypes> {
@@ -28,8 +29,15 @@ export class RpcQueueManager extends BaseQueueManager<RpcReturnTypes> {
     connections: Connections,
     @Inject(EXCEPTION_HANDLER_INJECTION_TOKEN)
     exceptionHandler: ExceptionHandler,
+    parser: JsonService,
   ) {
-    super(moduleRef, connections, exceptionHandler, RPC_HANDLER_METADATA);
+    super(
+      moduleRef,
+      connections,
+      exceptionHandler,
+      parser,
+      RPC_HANDLER_METADATA,
+    );
   }
 
   protected async bind(
@@ -41,7 +49,10 @@ export class RpcQueueManager extends BaseQueueManager<RpcReturnTypes> {
     await channel.prefetch(1);
     await channel.consume(metadata.queue, (msg) => {
       if (msg !== null) {
-        const message = new MessageWrapper<ConsumeMessageFields>(msg);
+        const message = new MessageWrapper<ConsumeMessageFields>(
+          msg,
+          this.parser,
+        );
 
         handler
           .execute(message)
