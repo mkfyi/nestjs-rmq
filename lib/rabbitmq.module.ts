@@ -213,7 +213,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
     const adapterProviders = (adapters ?? []).map(
       (option): FactoryProvider => ({
         provide: option.name,
-        useFactory: (connections: Connections) => {
+        useFactory: (connections: Connections, json: JsonService) => {
           const assemble = <T extends QueueAdapter | RpcQueueAdapter>(
             adapter: Type<T>,
             ...args: any[]
@@ -237,11 +237,11 @@ export class RabbitMQModule implements OnApplicationBootstrap {
               case QueueAdapterType.PubSub:
                 return assemble(PubSubQueueAdapter);
               case QueueAdapterType.Rpc:
-                return assemble<RpcQueueAdapter>(RpcQueueAdapter);
+                return assemble<RpcQueueAdapter>(RpcQueueAdapter, json);
             }
           }
         },
-        inject: [Connections],
+        inject: [Connections, JsonService],
       }),
     );
 
