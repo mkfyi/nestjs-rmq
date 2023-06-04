@@ -49,4 +49,8 @@ export class AnswerWrapper
       ? undefined
       : this.parser.parse<Reply<T>>(this.text()).payload;
   }
+
+  public get valid(): boolean {
+    return this.error === undefined && this.message === undefined;
+  }
 }
