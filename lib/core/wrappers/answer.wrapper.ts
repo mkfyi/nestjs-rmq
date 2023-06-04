@@ -20,10 +20,14 @@ export class AnswerWrapper
     super(native, parser);
 
     if (this.getReplyType() === ReplyType.Json) {
-      const { error, message } = this.object<Reply>();
+      // https://github.com/mkfyi/nestjs-rmq/issues/5
+      // this.object() extracts the final payload property, so we can't use it here.
+      const reply = this.parser.parse<Reply | null>(
+        this.text({ ignore: true }) as string,
+      );
 
-      this.error = error;
-      this.message = message;
+      this.error = reply?.error ?? undefined;
+      this.message = reply?.message ?? undefined;
     }
   }
 
