@@ -13,9 +13,11 @@ export class BaseExceptionHandler implements ExceptionHandler {
   }
 
   public handle<T>(error: T, queue: string): HandlerResult {
-    const { message, name } = error as Pick<HandlerResult, 'message'> & {
-      name?: string;
-    };
+    const { message } = error as HandlerResult;
+    const name =
+      typeof error === 'object'
+        ? (error as Record<string, unknown>).constructor.name ?? 'Error'
+        : 'Error';
 
     const [modifier, messages] = this.collectAndAssembleErrorMessages(message);
 
@@ -26,7 +28,7 @@ export class BaseExceptionHandler implements ExceptionHandler {
       ].join('\n'),
     );
 
-    return { error: name ?? 'Error', message };
+    return { error: name, message };
   }
 
   private collectAndAssembleErrorMessages(
