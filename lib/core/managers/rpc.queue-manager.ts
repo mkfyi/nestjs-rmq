@@ -76,22 +76,22 @@ export class RpcQueueManager extends BaseQueueManager<RpcReturnTypes> {
   ): boolean {
     return channel.sendToQueue(
       msg.getReplyTo() as string,
-      reply.payload instanceof Buffer
-        ? reply.payload
-        : Buffer.from(
-            reply.payload instanceof Uint8Array
-              ? reply.payload
-              : typeof reply.payload === 'object'
-              ? JSON.stringify(reply.payload)
-              : reply.payload != undefined
-              ? `${reply.payload}`
-              : JSON.stringify(reply),
-          ),
+      this.createResponseBufferFromReply(reply),
       {
         headers: this.getReplyTypeHeaders(reply),
         correlationId: msg.getCorrelationId(),
       },
     );
+  }
+
+  private createResponseBufferFromReply(reply: Reply): Buffer {
+    if (reply.payload instanceof Buffer) {
+      return reply.payload;
+    } else if (reply.payload instanceof Uint8Array) {
+      return Buffer.from(reply.payload);
+    }
+
+    return Buffer.from(this.parser.stringify(reply));
   }
 
   private getReplyTypeHeaders(reply: Reply): Record<string, string> {
