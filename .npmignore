@@ -1,10 +1,12 @@
 .idea/
 .git/
+.github/
 .husky/
 .vscode/
 .vscode-test/
 coverage/
 node_modules/
+lib/
 .eslintrc.js
 .gitignore
 .prettierrc
