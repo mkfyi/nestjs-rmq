@@ -10,7 +10,7 @@
 
 <p align="center">A decent module for a more advanced communication between microservices.</p>
 <p align="center">
-  <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+  <a href="https://www.npmjs.com/package/@mkfyi/nestjs-rmq" target="_blank"><img src="https://img.shields.io/npm/l/@mkfyi/nestjs-rmq" alt="Package License" /></a>
   <a href="https://github.com/mkfyi/nestjs-rmq/actions/workflows/publish.yml"><img src="https://github.com/mkfyi/nestjs-rmq/actions/workflows/publish.yml/badge.svg" alt="publish" /></a>
 </p>
 
