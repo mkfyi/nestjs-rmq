@@ -11,6 +11,7 @@
 <p align="center">A decent module for a more advanced communication between microservices.</p>
 <p align="center">
   <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+  <a href="https://github.com/mkfyi/nestjs-rmq/actions/workflows/publish.yml"><img src="https://github.com/mkfyi/nestjs-rmq/actions/workflows/publish.yml/badge.svg" alt="publish" /></a>
 </p>
 
 ## Description
@@ -21,7 +22,7 @@ This package provides a more advanced communication between microservices using 
 
 - Separate server/client components
 - Allowing multiple connections to one or more RabbitMQ server
-- Just implement the `QueueHandler` implement and mark the class with one of the following decorators
+- Just implement the `QueueHandler` interface and mark the class with one of the following decorators
     1. `@Listener()` - [Basic consumer](https://www.rabbitmq.com/tutorials/tutorial-one-javascript.html), the simplest thing that does *something*
     2. `@Worker()` - [Work Queues](https://www.rabbitmq.com/tutorials/tutorial-two-javascript.html), distributing tasks among workers
     3. `@PubSub()` - [Publish/Subscribe](https://www.rabbitmq.com/tutorials/tutorial-three-javascript.html), sending messages to many consumers at once
