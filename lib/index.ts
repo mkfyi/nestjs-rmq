@@ -23,4 +23,6 @@ export * from './common/interfaces/queue-handler.interface';
 export * from './common/interfaces/rabbitmq.module-options';
 export * from './common/decorators';
 
+export * from './core/json.service';
+
 export * from './rabbitmq.module';

@@ -191,7 +191,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
         ...QueueManagers,
         ...connections,
       ],
-      exports: [RabbitMQModule, ...connections],
+      exports: [RabbitMQModule, JsonService, ...connections],
     };
 
     dynModule.providers?.push({
