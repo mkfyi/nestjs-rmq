@@ -62,6 +62,7 @@ export interface BaseModuleOptions<T> {
     | TopicQueueAdapterOptions
   )[];
   parser?: ActionCallback;
+  replacer?: ActionCallback;
 }
 
 export interface RabbitMQModuleOptionsFactory

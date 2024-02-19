@@ -1,5 +1,6 @@
 export const DEFAULT_CONNECTION_NAME = 'default';
 export const JSON_SERVICE_PARSER = 'rmq.json_service.parser';
+export const JSON_SERVICE_REPLACER = 'rmq.json_service.replacer';
 export const LISTENER_HANDLER_METADATA = 'rmq.meta.handler.listener';
 export const PUB_SUB_ANDLER_METADATA = 'rmq.meta.handler.pub_sub';
 export const ROUTING_HANDLER_METADATA = 'rmq.meta.handler.routing';

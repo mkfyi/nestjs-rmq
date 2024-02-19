@@ -20,6 +20,7 @@ import {
   DEFAULT_CONNECTION_NAME,
   EXCEPTION_HANDLER_INJECTION_TOKEN,
   JSON_SERVICE_PARSER,
+  JSON_SERVICE_REPLACER,
 } from './common/constants';
 import { buildConnectionToken } from './core/utils/build-connection-token';
 import { ConnectionWrapper } from './core/wrappers/connection.wrapper';
@@ -108,6 +109,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
     return this.assemble(
       options.exceptionHandler,
       options.parser,
+      options.replacer,
       (Array.isArray(options.connection)
         ? options.connection
         : [{ name: DEFAULT_CONNECTION_NAME, ...options.connection }]
@@ -133,6 +135,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
     return this.assemble(
       options.exceptionHandler,
       options.parser,
+      options.replacer,
       (Array.isArray(options.connection)
         ? options.connection
         : [{ name: DEFAULT_CONNECTION_NAME, ...options.connection }]
@@ -163,6 +166,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
   private static assemble(
     exceptionHandler: Type | undefined,
     parser: ActionCallback | undefined,
+    replacer: ActionCallback | undefined,
     connections: (FactoryProvider | ValueProvider)[],
     adapters?: RabbitMQModuleOptions['adapters'],
     imports?: DynamicModule['imports'],
@@ -177,6 +181,10 @@ export class RabbitMQModule implements OnApplicationBootstrap {
         {
           provide: JSON_SERVICE_PARSER,
           useValue: parser,
+        },
+        {
+          provide: JSON_SERVICE_REPLACER,
+          useValue: null,
         },
         JsonService,
         exceptionHandler
