@@ -184,7 +184,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
         },
         {
           provide: JSON_SERVICE_REPLACER,
-          useValue: null,
+          useValue: replacer,
         },
         JsonService,
         exceptionHandler
