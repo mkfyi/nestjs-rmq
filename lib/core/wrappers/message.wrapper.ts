@@ -32,7 +32,10 @@ export class MessageWrapper<T extends CommonMessageFields = MessageFields>
   public readonly fields: T;
   public readonly properties: MessageProperties;
 
-  public constructor(native: AmqpMessage<T>, protected readonly parser: Json) {
+  public constructor(
+    native: AmqpMessage<T>,
+    protected readonly parser: Json,
+  ) {
     Object.assign(this, native);
   }
 

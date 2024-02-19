@@ -48,8 +48,8 @@ export abstract class BaseQueueAdapter<Ret = boolean>
           data instanceof Uint8Array
             ? data
             : typeof data !== 'string'
-            ? JSON.stringify(data)
-            : data,
+              ? JSON.stringify(data)
+              : data,
         );
   }
 }
