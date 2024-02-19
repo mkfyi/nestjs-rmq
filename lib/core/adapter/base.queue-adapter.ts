@@ -3,6 +3,7 @@ import { Connection } from '../../common/interfaces/connection.interface';
 import { InvalidConnectionException } from '../../common/exceptions/invalid-connection.exception';
 // noinspection ES6PreferShortImport
 import { Channel } from '../../common/interfaces/amqp-wrapper.interfaces';
+import { JsonService } from '../json.service';
 
 export abstract class BaseQueueAdapter<Ret = boolean>
   implements QueueAdapter<Ret>
@@ -10,6 +11,7 @@ export abstract class BaseQueueAdapter<Ret = boolean>
   protected constructor(
     protected readonly connection: Connection | null,
     protected readonly queue: string,
+    protected readonly parser: JsonService,
   ) {}
 
   /**
@@ -48,7 +50,7 @@ export abstract class BaseQueueAdapter<Ret = boolean>
           data instanceof Uint8Array
             ? data
             : typeof data !== 'string'
-              ? JSON.stringify(data)
+              ? this.parser.stringify(data)
               : data,
         );
   }

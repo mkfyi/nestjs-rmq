@@ -12,9 +12,9 @@ export class RpcQueueAdapter extends BaseQueueAdapter<Answer> {
   public constructor(
     connection: Connection | null,
     queue: string,
-    private readonly parser: JsonService,
+    parser: JsonService,
   ) {
-    super(connection, queue);
+    super(connection, queue, parser);
   }
 
   /**

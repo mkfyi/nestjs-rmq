@@ -229,6 +229,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
             new adapter(
               connections.get(option.connection ?? DEFAULT_CONNECTION_NAME),
               option.queue,
+              json,
               ...args,
             );
 
@@ -245,7 +246,7 @@ export class RabbitMQModule implements OnApplicationBootstrap {
               case QueueAdapterType.PubSub:
                 return assemble(PubSubQueueAdapter);
               case QueueAdapterType.Rpc:
-                return assemble<RpcQueueAdapter>(RpcQueueAdapter, json);
+                return assemble<RpcQueueAdapter>(RpcQueueAdapter);
             }
           }
         },
