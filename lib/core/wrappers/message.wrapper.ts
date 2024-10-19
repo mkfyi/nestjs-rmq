@@ -89,7 +89,9 @@ export class MessageWrapper<T extends CommonMessageFields = MessageFields>
   }
 
   protected getReplyType(): ReplyType {
-    const replyType = this.properties.headers[MESSAGE_HEADER_REPLY_TYPE];
+    const replyType = (this.properties.headers ?? {})[
+      MESSAGE_HEADER_REPLY_TYPE
+    ];
 
     return replyType !== null && replyType !== undefined
       ? parseInt(replyType)
